@@ -1,0 +1,12 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: knative-demo
+  namespace: default
+spec:
+  template:
+    spec:
+      containers:
+        - image: "docker.io/abondar/knativedemo:1.0-SNAPSHOT"
+          ports:
+            - containerPort: 8080
