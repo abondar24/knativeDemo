@@ -1,3 +1,5 @@
+import org.gradle.toolchains.foojay.architecturesArm64Bit
+
 plugins {
     kotlin("jvm") version "1.9.23"
     id("com.google.cloud.tools.jib") version "3.1.1"
@@ -6,8 +8,9 @@ plugins {
 apply (plugin = "application")
 
 group = "org.abondar.experimental"
-version = "1.0-SNAPSHOT"
+version = "1.1-SNAPSHOT"
 
+var mainClassName = "org.abondar.experimental.knativedemo.DemoFuncKt"
 
 repositories {
     mavenCentral()
@@ -22,7 +25,7 @@ dependencies {
 
 tasks.jar {
     manifest {
-        attributes["Main-Class"] = "org.abondar.experimental.knativedemo.DemoFuncKt"
+        attributes["Main-Class"] = mainClassName
     }
 
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
@@ -34,7 +37,18 @@ var registry = System.getenv("DOCKER_REGISTRY")
 
 jib {
     from {
-        image = "openjdk:17-alpine"
+        image = "eclipse-temurin:17-jre"
+        platforms {
+//            platform {
+//                architecture = "amd64"
+//                os = "linux"
+//            }
+            platform {
+                architecture = "arm64"
+                os = "linux"
+            }
+        }
+
     }
     to {
         image = "$registry/knativedemo:$version"
@@ -43,7 +57,13 @@ jib {
             password = System.getenv("DOCKER_PWD")
         }
     }
+
+    container {
+        mainClass = mainClassName
+        ports = listOf("8080","8090","8010","8020")
+    }
 }
+
 
 
 tasks.test {

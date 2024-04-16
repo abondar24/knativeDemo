@@ -5,13 +5,23 @@ Dummy Ktor based service to be deployed in KNative.
 
 ## Build and run
 
-- Local run
+- Local build and run
 
 ```
-./gradlew clean build
+./gradlew clean build 
+
+java -jar build/libs/knativeDemo-$version.jar
 ```
 
 Access: localhost:8080
+
+- Local docker build
+```
+./gradlew jibDockerBuild
+
+ docker run  -p8020:8020 -ePORT=8020 -eHOSTNAME=host $registry/knativedemo:$version
+```
+Default port is 8080. Env variables PORT and HOSTNAME are optional for setting
 
 - Docker push
 ```
